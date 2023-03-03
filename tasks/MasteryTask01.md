@@ -28,7 +28,7 @@ restrict the attribute to a set of allowed values. Use the enum type in your dia
 Use the `src/resources/mastery-task1-kindle-publishing-CD.puml` to document the class diagram.
 
 Next, create a sequence diagram for the API we'll be working on in milestone 2, `RemoveBookFromCatalog`. You can use
-the existing sequence diagrams in the design document as a starter. Include any error handling the APIs are expected to
+the existing sequence amsdiagr in the design document as a starter. Include any error handling the APIs are expected to
 perform, as well as their interactions with other classes.
 
 Update `src/resources/mastery-task1-remove-book-SD.puml` with a sequence diagram for your planned implementation of the
