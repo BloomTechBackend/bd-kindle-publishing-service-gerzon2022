@@ -2,12 +2,14 @@ package com.amazon.ata.kindlepublishingservice.dao;
 
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.exceptions.BookNotFoundException;
+import com.amazon.ata.kindlepublishingservice.models.Book;
 import com.amazon.ata.kindlepublishingservice.publishing.KindleFormattedBook;
 import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDeleteExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedList;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import org.apache.commons.lang3.StringUtils;
 
@@ -82,6 +84,25 @@ public class CatalogDao {
 //        deleteExpression.setExpected(expected);
         dynamoDbMapper.save(book);
         return book;
+    }
+    public void validateBookExists(String bookId) {
+
+        CatalogItemVersion book = new CatalogItemVersion();
+        book.setBookId(bookId);
+
+        DynamoDBQueryExpression<CatalogItemVersion> queryExpression = new DynamoDBQueryExpression()
+                .withHashKeyValues(book)
+                //.withScanIndexForward(false)
+                .withLimit(1);
+
+        List<CatalogItemVersion> results = dynamoDbMapper.query(CatalogItemVersion.class, queryExpression);
+        if (results.isEmpty()) {
+            throw new BookNotFoundException("Book not in Catalog");
+        }
+//        return results.get(0);
+
+
+
     }
 
 }
