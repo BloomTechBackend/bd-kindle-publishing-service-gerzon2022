@@ -31,7 +31,7 @@ public class BookPublisherTest {
     }
 
     @Test
-    public void start_notStarted_scheduleStarted() {
+    public void start_notStarted_scheduleStarted() throws InterruptedException {
         // GIVEN
 
         // WHEN
@@ -44,7 +44,7 @@ public class BookPublisherTest {
     }
 
     @Test
-    public void start_alreadyStarted_scheduleNotRestarted() {
+    public void start_alreadyStarted_scheduleNotRestarted() throws InterruptedException {
         // GIVEN
         bookPublisher.start();
 
@@ -59,7 +59,7 @@ public class BookPublisherTest {
     }
 
     @Test
-    public void start_afterStop_scheduleRestarted() {
+    public void start_afterStop_scheduleRestarted() throws InterruptedException {
         // GIVEN
         bookPublisher.start();
         bookPublisher.stop();
@@ -87,7 +87,7 @@ public class BookPublisherTest {
     }
 
     @Test
-    public void stop_publisherStarted_shutsDown() {
+    public void stop_publisherStarted_shutsDown() throws InterruptedException {
         // GIVEN
         bookPublisher.start();
 

@@ -38,12 +38,16 @@ public class BookPublisher {
     /**
      * Start publishing books.
      */
-    public void start() {
+    public void start() throws InterruptedException {
         if (isRunning) {
             return;
         }
         isRunning = true;
-        scheduledExecutorService.scheduleWithFixedDelay(publishTask, 0, 1, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(publishTask, 0, 1, TimeUnit.SECONDS);
+
+
+        System.out.println("bp running");
+
     }
 
     /**
@@ -52,6 +56,7 @@ public class BookPublisher {
     public void stop() {
         isRunning = false;
         scheduledExecutorService.shutdown();
+        System.out.println("bp stoppped");
     }
 
     /**

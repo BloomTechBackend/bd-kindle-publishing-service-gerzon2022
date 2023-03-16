@@ -1,9 +1,10 @@
 package com.amazon.ata.kindlepublishingservice.dao;
 
+
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.dynamodb.models.PublishingStatusItem;
 import com.amazon.ata.kindlepublishingservice.enums.PublishingRecordStatus;
-import com.amazon.ata.kindlepublishingservice.exceptions.PublishingStatusNotFoundException;
+
 import com.amazon.ata.kindlepublishingservice.utils.KindlePublishingUtils;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -21,6 +22,8 @@ public class PublishingStatusDao {
     private static final String ADDITIONAL_NOTES_PREFIX = " Additional Notes: ";
     private final DynamoDBMapper dynamoDbMapper;
 
+
+
     /**
      * Instantiates a new PublishingStatusDao object.
      *
@@ -29,6 +32,7 @@ public class PublishingStatusDao {
     @Inject
     public PublishingStatusDao(DynamoDBMapper dynamoDbMapper) {
         this.dynamoDbMapper = dynamoDbMapper;
+
     }
 
     /**
@@ -59,6 +63,7 @@ public class PublishingStatusDao {
         if (results.isEmpty()) {
             return null;
         }
+        System.out.println("Found it! " + results.get(0).getStatus());
         return results;
 
     }
@@ -87,6 +92,8 @@ public class PublishingStatusDao {
                 .toString();
         }
 
+
+
         PublishingStatusItem item = new PublishingStatusItem();
         item.setPublishingRecordId(publishingRecordId);
         item.setStatus(publishingRecordStatus);
@@ -95,4 +102,6 @@ public class PublishingStatusDao {
         dynamoDbMapper.save(item);
         return item;
     }
+
+
 }

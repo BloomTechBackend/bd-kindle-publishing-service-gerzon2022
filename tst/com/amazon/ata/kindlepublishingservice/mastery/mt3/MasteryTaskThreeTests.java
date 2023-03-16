@@ -26,7 +26,7 @@ public class MasteryTaskThreeTests extends IntegrationTestBase {
     private static final String MULTIPLE_STATUS_BOOK_ID = "book.tct3.multiple_statuses";
     private static final String NONEXISTENT_STATUS_RECORD_ID = "publishingstatus.tct3_does_not_exist";
 
-    private static final ApplicationComponent COMPONENT = DaggerApplicationComponent.create();
+    private static final ApplicationComponent COMPONENT = null;//DaggerApplicationComponent.create();
 
     /**
      * Ensure the test infra is ready for test run, including creating the client.

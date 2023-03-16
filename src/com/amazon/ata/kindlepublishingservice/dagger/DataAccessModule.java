@@ -1,6 +1,8 @@
 package com.amazon.ata.kindlepublishingservice.dagger;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -16,8 +18,9 @@ public class DataAccessModule {
     @Singleton
     @Provides
     public DynamoDBMapper provideDynamoDBMapper() {
+        AWSCredentialsProvider provider = new ProfileCredentialsProvider("default");
         AmazonDynamoDB amazonDynamoDBClient = AmazonDynamoDBClientBuilder.standard()
-            .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
+            .withCredentials(provider)
             .withRegion(Regions.US_WEST_2)
             .build();
 

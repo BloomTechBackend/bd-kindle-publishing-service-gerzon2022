@@ -46,7 +46,11 @@ public class GetBookActivity {
      */
 
     public GetBookResponse execute(final GetBookRequest request) {
-        CatalogItemVersion catalogItem = catalogDao.getBookFromCatalog(request.getBookId());
+
+
+        CatalogItemVersion catalogItem = catalogDao.validateBookExists(request.getBookId());
+
+        System.out.println(catalogItem.getGenre() + " result genre");
         List<BookRecommendation> recommendations = recommendationServiceClient.getBookRecommendations(
             BookGenre.valueOf(catalogItem.getGenre().name()));
         return GetBookResponse.builder()

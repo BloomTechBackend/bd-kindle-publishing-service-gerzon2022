@@ -1,8 +1,12 @@
 package com.amazon.ata.kindlepublishingservice.mastery.mt4;
 
+import com.amazon.ata.kindlepublishingservice.App;
+import com.amazon.ata.kindlepublishingservice.converters.BookPublishRequestConverter;
 import com.amazon.ata.kindlepublishingservice.dagger.ATAKindlePublishingServiceManager;
 import com.amazon.ata.kindlepublishingservice.dagger.ApplicationComponent;
 import com.amazon.ata.kindlepublishingservice.dagger.DaggerApplicationComponent;
+import com.amazon.ata.kindlepublishingservice.dao.CatalogDao;
+import com.amazon.ata.kindlepublishingservice.dao.PublishingStatusDao;
 import com.amazon.ata.kindlepublishingservice.helpers.IntegrationTestBase;
 import com.amazon.ata.kindlepublishingservice.helpers.KindlePublishingServiceTctTestDao.CatalogItemVersion;
 import com.amazon.ata.kindlepublishingservice.helpers.SubmitBookForPublishingHelper;
@@ -13,10 +17,15 @@ import com.amazon.ata.kindlepublishingservice.models.requests.SubmitBookForPubli
 import com.amazon.ata.kindlepublishingservice.models.response.GetBookResponse;
 import com.amazon.ata.kindlepublishingservice.models.response.GetPublishingStatusResponse;
 import com.amazon.ata.kindlepublishingservice.models.response.SubmitBookForPublishingResponse;
+import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequest;
+import com.amazon.ata.kindlepublishingservice.publishing.BookPublishRequestManager;
+import com.amazon.ata.kindlepublishingservice.publishing.BookPublishTask;
 import com.amazon.ata.recommendationsservice.types.BookGenre;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.testng.Assert;
 
+import javax.validation.constraints.AssertTrue;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +36,7 @@ import static org.testng.Assert.*;
 public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTestBase {
     private static final Duration GET_EXPECTED_STATUS_BUFFER = Duration.ofMillis(500L);
     private static final int MAX_GET_EXPECTED_STATUS_ATTEMPTS = 10;
-    private static final ApplicationComponent COMPONENT = DaggerApplicationComponent.create();
+    private static final ApplicationComponent COMPONENT =  DaggerApplicationComponent.create();
 
     /**
      * Ensure the test infra is ready for test run, including creating the client.
@@ -43,7 +52,7 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
     }
 
     @Test
-    public void submitBookForPublishing_noBookId_publishesAndCreatesNewBook() {
+    public void submitBookForPublishing_noBookId_publishesAndCreatesNewBook()  {
         // GIVEN
         SubmitBookForPublishingRequest request = SubmitBookForPublishingRequest.builder()
             .withAuthor("author")
@@ -53,12 +62,15 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
             .build();
 
         // WHEN
+
+
         SubmitBookForPublishingResponse response = COMPONENT.provideSubmitBookForPublishingActivity().execute(request);
 
         // THEN
         // wait for queued status
         waitForExpectedStatus(response.getPublishingRecordId(),
             PublishingStatus.QUEUED);
+        //App.component.provideATAKindlePublishingServiceManager().start();
         // wait for in progress status
         waitForExpectedStatus(response.getPublishingRecordId(),
             PublishingStatus.IN_PROGRESS);
@@ -94,7 +106,7 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
     }
 
     @Test
-    public void submitBookForPublishing_existingBookId_publishesAndCreatesNewBookVersion() {
+    public void submitBookForPublishing_existingBookId_publishesAndCreatesNewBookVersion()  {
         // GIVEN
         String bookId = "book." + UUID.randomUUID().toString();
         SubmitBookForPublishingRequest request = SubmitBookForPublishingRequest.builder()
@@ -115,10 +127,18 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
         existingBook.setInactive(false);
         super.getTestDao().save(existingBook);
 
+
         // WHEN
         SubmitBookForPublishingResponse response = COMPONENT.provideSubmitBookForPublishingActivity().execute(request);
-
-        // THEN
+       //BookPublishRequest bookPublishRequest = BookPublishRequestConverter.toBookPublishRequest(request);
+//        BookPublishRequestManager bookPublishRequestManager = new BookPublishRequestManager();
+//        bookPublishRequestManager.addBookPublishRequest(bookPublishRequest);
+//        System.out.println("recordId "+ bookPublishRequest.getPublishingRecordId());
+        //System.out.println("recordId2 "+ bookPublishRequestManager.getBookPublishRequestToProcess().getPublishingRecordId() );
+       //String rcId = bookPublishRequestManager.getBookPublishRequestToProcess().getPublishingRecordId();
+        //assertEquals(rcId , bookPublishRequest.getPublishingRecordId(), "tsk "+bookPublishRequestManager.getBookPublishRequestToProcess().getPublishingRecordId());
+        //App.component.provideBookPublishTask().run();
+//        // THEN
         // wait for queued status
         waitForExpectedStatus(response.getPublishingRecordId(),
             PublishingStatus.QUEUED);
@@ -126,22 +146,26 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
         waitForExpectedStatus(response.getPublishingRecordId(),
             PublishingStatus.IN_PROGRESS);
 
-        SubmitBookForPublishingHelper.waitForPublishing();
-
-        // wait for successful status
+          SubmitBookForPublishingHelper.waitForPublishing();
+//
+//        // wait for successful status
         PublishingStatusRecord successful = waitForExpectedStatus(response.getPublishingRecordId(),
             PublishingStatus.SUCCESSFUL);
-
+        System.out.println(successful.toString() + "success!");
+//
         assertNotNull(successful.getBookId(), "A successful PublishingStatusRecord should contain a bookId.");
-
-        // a new book version should exist now
+//
+        System.out.println("oldnewversion" + successful.getBookId());
+//        // a new book version should exist now
         GetBookRequest getBookRequest = GetBookRequest.builder()
             .withBookId(successful.getBookId())
             .build();
-
+////
+        System.out.println("follow this " + getBookRequest.getBookId());
         GetBookResponse getBookResponse = COMPONENT.provideGetBookActivity().execute(getBookRequest);
 
         Book book = getBookResponse.getBook();
+        System.out.println("oldnewversion test" + book.getBookId()+" test " + book.getVersion());
         assertEquals(book.getAuthor(), request.getAuthor(), "Expected a successful book publish request" +
             "to create a book with the provided author");
         assertEquals(book.getBookId(), successful.getBookId(), "Expected a successful book publish request" +
@@ -152,8 +176,8 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
             "to create a book with the provided text");
         assertEquals(book.getTitle(), request.getTitle(), "Expected a successful book publish request" +
             "to create a book with the provided title");
-        assertEquals(book.getVersion(), existingBook.getVersion() + 1, "Expected a successful book publish request" +
-            "to create a new book with an incremented version");
+        assertEquals(book.getVersion(), existingBook.getVersion() + 1, "Expected "+book.getVersion()+"a "+(existingBook.getVersion() + 1)+"successful book publish request" +
+            "to create a new book with an incremented version" + book.getBookId() + " = " + existingBook.getBookId());
 
         // previous book version should be marked inactive
         CatalogItemVersion versionOneBook = super.getTestDao().load(existingBook);
@@ -210,4 +234,5 @@ public class MasteryTaskFourSubmitBookForPublishingTests extends IntegrationTest
             MAX_GET_EXPECTED_STATUS_ATTEMPTS * GET_EXPECTED_STATUS_BUFFER.toMillis()));
         return null;
     }
+
 }

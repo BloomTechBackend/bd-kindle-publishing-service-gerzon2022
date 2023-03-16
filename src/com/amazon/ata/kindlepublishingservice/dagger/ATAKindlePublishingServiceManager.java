@@ -25,6 +25,7 @@ public class ATAKindlePublishingServiceManager {
      */
     @Inject
     ATAKindlePublishingServiceManager(BookPublisher bookPublisher) {
+        System.out.println("Service Started");
         this.bookPublisher = bookPublisher;
     }
 

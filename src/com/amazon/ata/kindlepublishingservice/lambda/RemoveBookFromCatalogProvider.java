@@ -1,7 +1,7 @@
 package com.amazon.ata.kindlepublishingservice.lambda;
 
 import com.amazon.ata.kindlepublishingservice.dagger.ApplicationComponent;
-import com.amazon.ata.kindlepublishingservice.dagger.DaggerApplicationComponent;
+
 import com.amazon.ata.kindlepublishingservice.models.requests.RemoveBookFromCatalogRequest;
 import com.amazon.ata.kindlepublishingservice.models.response.RemoveBookFromCatalogResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -20,7 +20,7 @@ public class RemoveBookFromCatalogProvider implements RequestHandler<RemoveBookF
         return getApp().provideRemoveBookFromCatalogActivity().execute(input);
     }
     private ApplicationComponent getApp() {
-        ApplicationComponent applicationComponent = DaggerApplicationComponent.create();
+        ApplicationComponent applicationComponent = null;//DaggerApplicationComponent.create();
         return applicationComponent;
     }
 }

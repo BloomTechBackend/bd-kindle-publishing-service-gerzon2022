@@ -24,6 +24,7 @@ public class GetPublishingStatusActivity {
 
     public GetPublishingStatusResponse execute(GetPublishingStatusRequest publishingStatusRequest) {
         List<PublishingStatusItem> publishingStatusItems = new ArrayList<>();
+        String tgetPrecordID = publishingStatusRequest.getPublishingRecordId();
         publishingStatusItems = publishingStatusDao.getPublishingStatus(publishingStatusRequest.getPublishingRecordId());
         if (publishingStatusItems == null)
             throw new PublishingStatusNotFoundException("No status found");

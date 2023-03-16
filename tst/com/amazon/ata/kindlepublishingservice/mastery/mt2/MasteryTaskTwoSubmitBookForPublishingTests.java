@@ -21,10 +21,10 @@ import static org.testng.Assert.assertThrows;
 
 public class MasteryTaskTwoSubmitBookForPublishingTests extends IntegrationTestBase {
 
-    private static final ApplicationComponent COMPONENT = DaggerApplicationComponent.create();
+    private static final ApplicationComponent COMPONENT =  null;//DaggerApplicationComponent.create();
 
     @Test
-    public void submitBookForPublishing_noBookId_submitsBook() {
+    public void submitBookForPublishing_noBookId_submitsBook() throws Exception {
 
         // GIVEN
         SubmitBookForPublishingRequest submitBookForPublishingRequest = SubmitBookForPublishingRequest.builder()
@@ -54,7 +54,7 @@ public class MasteryTaskTwoSubmitBookForPublishingTests extends IntegrationTestB
     }
 
     @Test
-    public void submitBookForPublishing_existingBookId_submitsBook() {
+    public void submitBookForPublishing_existingBookId_submitsBook() throws Exception {
         // GIVEN
         CatalogItemVersion catalogItemVersion = saveNewCatalogItemVersion(false);
 
@@ -84,7 +84,7 @@ public class MasteryTaskTwoSubmitBookForPublishingTests extends IntegrationTestB
             "publishing status record %s to have a non null status message.", publishingStatusRecord));    }
 
     @Test
-    public void submitBookForPublishing_existingInactiveBookId_submitsBook() {
+    public void submitBookForPublishing_existingInactiveBookId_submitsBook() throws Exception {
         // GIVEN
         CatalogItemVersion catalogItemVersion = saveNewCatalogItemVersion(true);
 

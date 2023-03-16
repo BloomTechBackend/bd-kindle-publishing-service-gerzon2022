@@ -298,5 +298,11 @@ perform the steps required for publishing a Kindle book into the catalog. For ea
     succeed. If an exception is caught while processing, adds an item into the Publishing Status
     table with state `FAILED` and includes the exception message.
 
+
+
+
+5. 
+
+
 ![Sequence diagram for Asynchronous Book Processing](src/resources/processing.png)
 
